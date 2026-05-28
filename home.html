@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Zenova — Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy-950: #050d1f;
+    --navy-900: #0a1628;
+    --navy-800: #0f2040;
+    --navy-700: #163058;
+    --navy-600: #1d4278;
+    --navy-500: #245898;
+    --navy-400: #3572b8;
+    --navy-300: #5a93d0;
+    --navy-200: #93bce0;
+    --navy-100: #c9dff2;
+    --navy-50:  #eaf3fb;
+    --accent:   #2563eb;
+    --accent-light: #3b82f6;
+    --gold:     #f59e0b;
+    --success:  #10b981;
+    --danger:   #ef4444;
+    --white:    #ffffff;
+    --gray-50:  #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-300: #cbd5e1;
+    --gray-400: #94a3b8;
+    --gray-500: #64748b;
+    --gray-600: #475569;
+    --gray-700: #334155;
+    --gray-800: #1e293b;
+  }
+
+  html, body {
+    height: 100%;
+    font-family: 'DM Sans', sans-serif;
+    background: #ffffff;
+    color: var(--navy-900);
+    overflow: hidden;
+  }
+
+  /* ─── BG EFFECTS ─────────────────────────── */
+  .bg-scene {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .bg-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    pointer-events: none;
+  }
+
+  .orb1 {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(37,99,235,0.10) 0%, transparent 70%);
+    top: -200px; left: -150px;
+    animation: driftA 12s ease-in-out infinite alternate;
+  }
+
+  .orb2 {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(21,52,120,0.08) 0%, transparent 70%);
+    bottom: -150px; right: -100px;
+    animation: driftB 15s ease-in-out infinite alternate;
+  }
+
+  .orb3 {
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(37,99,235,0.06) 0%, transparent 70%);
+    top: 40%; right: 20%;
+    animation: driftC 10s ease-in-out infinite alternate;
+  }
+
+  .grid-lines {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(13,36,90,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(13,36,90,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  @keyframes driftA { from { transform: translate(0,0) scale(1); } to { transform: translate(40px, 30px) scale(1.1); } }
+  @keyframes driftB { from { transform: translate(0,0) scale(1); } to { transform: translate(-30px, -40px) scale(1.08); } }
+  @keyframes driftC { from { transform: translate(0,0); } to { transform: translate(20px, -20px); } }
+
+  /* ─── LAYOUT ─────────────────────────────── */
+  .page {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  /* ─── CARD ───────────────────────────────── */
+  .login-card {
+    background: #ffffff;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: 1.5px solid rgba(13,36,90,0.12);
+    border-radius: 24px;
+    width: 100%;
+    max-width: 440px;
+    padding: 44px 40px 40px;
+    box-shadow:
+      0 0 0 1px rgba(37,99,235,0.06),
+      0 24px 60px rgba(13,36,90,0.10),
+      0 4px 16px rgba(37,99,235,0.06);
+    animation: cardIn 0.6s cubic-bezier(0.22,1,0.36,1) both;
+  }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(28px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* ─── LOGO ───────────────────────────────── */
+  .logo-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+    justify-content: center;
+  }
+
+  .logo-img {
+    width: 46px;
+    height: 46px;
+    object-fit: contain;
+    border-radius: 12px;
+  }
+
+  .logo-mark {
+    width: 46px; height: 46px;
+    background: linear-gradient(135deg, var(--accent), var(--navy-300));
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Sora', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    color: #fff;
+    letter-spacing: -1px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 20px rgba(37,99,235,0.45);
+  }
+
+  .logo-text-wrap { text-align: left; }
+
+  .logo-name {
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--navy-900);
+    letter-spacing: -0.5px;
+    line-height: 1;
+  }
+
+  .logo-tagline {
+    font-size: 11px;
+    color: var(--navy-500);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+
+  /* ─── HEADER TEXT ────────────────────────── */
+  .card-heading {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .card-heading h1 {
+    font-family: 'Sora', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--navy-900);
+    letter-spacing: -0.4px;
+    margin-bottom: 6px;
+  }
+
+  .card-heading p {
+    font-size: 14px;
+    color: var(--navy-500);
+    line-height: 1.5;
+  }
+
+  /* ─── DIVIDER ────────────────────────────── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(13,36,90,0.12), transparent);
+    margin-bottom: 28px;
+  }
+
+  /* ─── FORM ───────────────────────────────── */
+  .form-group {
+    margin-bottom: 18px;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--navy-700);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .input-wrap {
+    position: relative;
+  }
+
+  .input-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px; height: 18px;
+    color: var(--navy-400);
+    pointer-events: none;
+    transition: color 0.2s;
+  }
+
+  .form-input {
+    width: 100%;
+    background: var(--navy-50);
+    border: 1.5px solid rgba(13,36,90,0.14);
+    border-radius: 10px;
+    padding: 13px 16px 13px 44px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--navy-900);
+    outline: none;
+    transition: all 0.2s;
+    letter-spacing: 0.1px;
+  }
+
+  .form-input::placeholder {
+    color: var(--navy-300);
+    font-size: 14px;
+  }
+
+  .form-input:focus {
+    border-color: var(--accent-light);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+  }
+
+  .form-input:focus + .input-focus-bar { opacity: 1; }
+
+  .input-wrap:focus-within .input-icon {
+    color: var(--accent-light);
+  }
+
+  /* ─── ERROR ──────────────────────────────── */
+  .field-error {
+    font-size: 12px;
+    color: #f87171;
+    margin-top: 6px;
+    display: none;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .field-error.show { display: flex; }
+
+  /* ─── COMPETITION NOTICE ─────────────────── */
+  .notice-box {
+    background: rgba(37,99,235,0.06);
+    border: 1px solid rgba(37,99,235,0.18);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-bottom: 24px;
+  }
+
+  .notice-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .notice-text {
+    font-size: 12.5px;
+    color: var(--navy-700);
+    line-height: 1.5;
+  }
+
+  .notice-text strong {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* ─── BUTTON ─────────────────────────────── */
+  .btn-login {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, var(--accent), #1a4fc7);
+    border: none;
+    border-radius: 10px;
+    font-family: 'Sora', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    letter-spacing: 0.2px;
+    transition: all 0.25s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 4px 20px rgba(37,99,235,0.4);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-login::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .btn-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(37,99,235,0.55);
+  }
+
+  .btn-login:hover::before { opacity: 1; }
+  .btn-login:active { transform: translateY(0); }
+
+  .btn-login:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .btn-arrow {
+    width: 18px; height: 18px;
+    transition: transform 0.2s;
+  }
+
+  .btn-login:hover .btn-arrow { transform: translateX(3px); }
+
+  /* ─── SPINNER ────────────────────────────── */
+  .spinner {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ─── FOOTER ─────────────────────────────── */
+  .card-footer {
+    text-align: center;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(13,36,90,0.08);
+    font-size: 12px;
+    color: var(--navy-400);
+    line-height: 1.6;
+  }
+
+  .card-footer strong { color: var(--navy-600); font-weight: 500; }
+
+  /* ─── SUCCESS OVERLAY ────────────────────── */
+  .success-overlay {
+    position: fixed;
+    inset: 0;
+    background: #ffffff;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s;
+  }
+
+  .success-overlay.show {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .success-ring {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    background: rgba(16,185,129,0.10);
+    border: 2px solid var(--success);
+    display: flex; align-items: center; justify-content: center;
+    animation: popIn 0.5s cubic-bezier(0.22,1,0.36,1) both 0.1s;
+  }
+
+  @keyframes popIn {
+    from { transform: scale(0.5); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+
+  .success-overlay h2 {
+    font-family: 'Sora', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--navy-900);
+    animation: fadeUp 0.5s ease both 0.3s;
+  }
+
+  .success-overlay p {
+    font-size: 13px;
+    color: var(--navy-500);
+    animation: fadeUp 0.5s ease both 0.4s;
+  }
+
+  .progress-bar-wrap {
+    width: 200px;
+    height: 3px;
+    background: rgba(13,36,90,0.10);
+    border-radius: 2px;
+    overflow: hidden;
+    animation: fadeUp 0.5s ease both 0.5s;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    width: 0%;
+    transition: width 1.8s ease;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── RESPONSIVE ─────────────────────────── */
+  @media (max-width: 480px) {
+    .login-card { padding: 32px 24px 28px; }
+    body { overflow: auto; }
+  }
+</style>
+</head>
+<body>
+
+<!-- BG -->
+<div class="bg-scene">
+  <div class="grid-lines"></div>
+  <div class="bg-orb orb1"></div>
+  <div class="bg-orb orb2"></div>
+  <div class="bg-orb orb3"></div>
+</div>
+
+<!-- SUCCESS OVERLAY -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-ring">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+  </div>
+  <h2 id="successName">Welcome!</h2>
+  <p>Login successful — redirecting to dashboard…</p>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+</div>
+
+<!-- PAGE -->
+<div class="page">
+  <div class="login-card">
+
+    <!-- Logo -->
+    <div class="logo-wrap">
+      <img src="1.png" alt="Zenova" class="logo-img" id="logoImg"
+        onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='flex';" />
+      <div class="logo-mark" id="logoFallback" style="display:none">Z</div>
+      <div class="logo-text-wrap">
+        <div class="logo-name">Zenova</div>
+        <div class="logo-tagline">CBT Platform</div>
+      </div>
+    </div>
+
+    <!-- Heading -->
+    <div class="card-heading">
+      <h1>Student Registration</h1>
+      <p>Enter your details to access the<br>Zenova Mega CBT Competition 2027</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Notice -->
+    <div class="notice-box">
+      <div class="notice-icon">🏆</div>
+      <div class="notice-text">
+        <strong>Zenova Mega CBT Competition 2027</strong> — April 10th, 2027.
+        Register below to access your dashboard and select your subjects.
+      </div>
+    </div>
+
+    <!-- Form -->
+    <div class="form-group">
+      <label class="form-label" for="fullName">Full Name</label>
+      <div class="input-wrap">
+        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        <input
+          type="text"
+          id="fullName"
+          class="form-input"
+          placeholder="e.g. Adebayo Samuel"
+          autocomplete="name"
+          spellcheck="false"
+        />
+      </div>
+      <div class="field-error" id="nameError">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Please enter your full name
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="schoolName">School Name</label>
+      <div class="input-wrap">
+        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <input
+          type="text"
+          id="schoolName"
+          class="form-input"
+          placeholder="e.g. Federal Government College, Lagos"
+          autocomplete="organization"
+          spellcheck="false"
+        />
+      </div>
+      <div class="field-error" id="schoolError">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Please enter your school name
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <button class="btn-login" id="loginBtn" onclick="handleLogin()">
+      <span id="btnText">Enter Dashboard</span>
+      <div class="spinner" id="btnSpinner"></div>
+      <svg class="btn-arrow" id="btnArrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <line x1="5" y1="12" x2="19" y2="12"/>
+        <polyline points="12 5 19 12 12 19"/>
+      </svg>
+    </button>
+
+    <!-- Footer -->
+    <div class="card-footer">
+      <strong>Zenova CBT Platform</strong> · Secure Student Portal<br>
+      Your data is used only for competition registration.
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const nameInput   = document.getElementById('fullName');
+  const schoolInput = document.getElementById('schoolName');
+  const nameError   = document.getElementById('nameError');
+  const schoolError = document.getElementById('schoolError');
+  const loginBtn    = document.getElementById('loginBtn');
+  const btnText     = document.getElementById('btnText');
+  const btnSpinner  = document.getElementById('btnSpinner');
+  const btnArrow    = document.getElementById('btnArrow');
+
+  // Clear errors on type
+  nameInput.addEventListener('input',   () => nameError.classList.remove('show'));
+  schoolInput.addEventListener('input', () => schoolError.classList.remove('show'));
+
+  // Enter key support
+  [nameInput, schoolInput].forEach(el => {
+    el.addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
+  });
+
+  function handleLogin() {
+    const name   = nameInput.value.trim();
+    const school = schoolInput.value.trim();
+
+    let valid = true;
+
+    if (!name) {
+      nameError.classList.add('show');
+      nameInput.focus();
+      valid = false;
+    }
+
+    if (!school) {
+      schoolError.classList.add('show');
+      if (valid) schoolInput.focus();
+      valid = false;
+    }
+
+    if (!valid) return;
+
+    // Loading state
+    loginBtn.disabled = true;
+    btnText.textContent = 'Signing in…';
+    btnArrow.style.display = 'none';
+    btnSpinner.style.display = 'block';
+
+    // Simulated brief auth delay
+    setTimeout(() => {
+      // Build initials
+      const parts = name.split(' ').filter(Boolean);
+      const initials = parts.length >= 2
+        ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+        : name.slice(0, 2).toUpperCase();
+
+      // Registered time
+      const now = new Date();
+      const registeredOn = now.toLocaleDateString('en-GB', {
+        day: 'numeric', month: 'long', year: 'numeric'
+      });
+      const registeredTime = now.toLocaleTimeString('en-GB', {
+        hour: '2-digit', minute: '2-digit'
+      });
+
+      // Save to localStorage
+      const userData = { name, school, initials, registeredOn, registeredTime };
+      localStorage.setItem('zenovaUser', JSON.stringify(userData));
+
+      // Show success overlay
+      const overlay = document.getElementById('successOverlay');
+      document.getElementById('successName').textContent = `Welcome, ${parts[0]}! 🎉`;
+      overlay.classList.add('show');
+
+      // Animate progress bar
+      setTimeout(() => {
+        document.getElementById('progressBar').style.width = '100%';
+      }, 50);
+
+      // Redirect after delay
+      setTimeout(() => {
+        window.location.href = 'zenova-dashboard.html';
+      }, 2200);
+
+    }, 1200);
+  }
+</script>
+</body>
+</html>

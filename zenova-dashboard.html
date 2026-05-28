@@ -1,0 +1,1822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Zenova — CBT Competition Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy-950: #050d1f;
+    --navy-900: #0a1628;
+    --navy-800: #0f2040;
+    --navy-700: #163058;
+    --navy-600: #1d4278;
+    --navy-500: #245898;
+    --navy-400: #3572b8;
+    --navy-300: #5a93d0;
+    --navy-200: #93bce0;
+    --navy-100: #c9dff2;
+    --navy-50:  #eaf3fb;
+    --accent:   #2563eb;
+    --accent-light: #3b82f6;
+    --accent-glow: #60a5fa;
+    --gold:     #f59e0b;
+    --success:  #10b981;
+    --danger:   #ef4444;
+    --white:    #ffffff;
+    --gray-50:  #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-300: #cbd5e1;
+    --gray-400: #94a3b8;
+    --gray-500: #64748b;
+    --gray-600: #475569;
+    --gray-700: #334155;
+    --gray-800: #1e293b;
+    --sidebar-w: 260px;
+    --topbar-h: 0px;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+  }
+
+  html, body {
+    height: 100%;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--gray-50);
+    color: var(--gray-800);
+  }
+
+  /* ─── LAYOUT ─────────────────────────────── */
+  .layout {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ─── SIDEBAR ────────────────────────────── */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--navy-900);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 100;
+    overflow: hidden;
+  }
+
+  .sidebar::before {
+    content: '';
+    position: absolute;
+    top: -120px; right: -120px;
+    width: 320px; height: 320px;
+    background: radial-gradient(circle, rgba(37,99,235,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .sidebar-logo {
+    padding: 28px 24px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-mark {
+    width: 42px; height: 42px;
+    background: linear-gradient(135deg, var(--accent), var(--navy-300));
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Sora', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    color: #fff;
+    letter-spacing: -1px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 16px rgba(37,99,235,0.4);
+  }
+
+  .logo-text {
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: #fff;
+    letter-spacing: -0.5px;
+    line-height: 1;
+  }
+
+  .logo-sub {
+    font-size: 10px;
+    font-weight: 400;
+    color: var(--navy-300);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    padding: 20px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow-y: auto;
+  }
+
+  .nav-section-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--navy-400);
+    text-transform: uppercase;
+    letter-spacing: 1.8px;
+    padding: 12px 10px 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    color: var(--navy-200);
+    font-size: 14px;
+    font-weight: 400;
+    position: relative;
+    user-select: none;
+  }
+
+  .nav-item:hover {
+    background: rgba(255,255,255,0.07);
+    color: #fff;
+  }
+
+  .nav-item.active {
+    background: linear-gradient(90deg, rgba(37,99,235,0.25), rgba(37,99,235,0.08));
+    color: var(--accent-glow);
+    font-weight: 500;
+  }
+
+  .nav-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 25%; bottom: 25%;
+    width: 3px;
+    background: var(--accent-light);
+    border-radius: 0 4px 4px 0;
+  }
+
+  .nav-item svg {
+    width: 18px; height: 18px;
+    opacity: 0.75;
+    flex-shrink: 0;
+  }
+
+  .nav-item.active svg { opacity: 1; }
+
+  .nav-spacer { flex: 1; }
+
+  .nav-item.logout {
+    color: #f87171;
+    margin-bottom: 8px;
+  }
+
+  .nav-item.logout:hover {
+    background: rgba(239,68,68,0.1);
+    color: #fca5a5;
+  }
+
+  .sidebar-user {
+    margin: 0 14px 16px;
+    background: rgba(255,255,255,0.05);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .user-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--navy-500), var(--accent));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .user-info-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: #fff;
+    line-height: 1.2;
+  }
+
+  .user-info-role {
+    font-size: 11px;
+    color: var(--navy-300);
+    margin-top: 1px;
+  }
+
+  /* ─── MAIN CONTENT ───────────────────────── */
+  .main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    min-height: 100vh;
+    background: var(--gray-50);
+    padding: 32px 36px 48px;
+    max-width: calc(100vw - var(--sidebar-w));
+  }
+
+  /* ─── TOP BANNER ─────────────────────────── */
+  .welcome-banner {
+    background: linear-gradient(135deg, var(--navy-800) 0%, var(--navy-600) 60%, var(--navy-500) 100%);
+    border-radius: var(--radius-xl);
+    padding: 36px 40px;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .welcome-banner::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: 80px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(96,165,250,0.15) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  .welcome-banner::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; right: -40px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    border: 40px solid rgba(255,255,255,0.03);
+    pointer-events: none;
+  }
+
+  .banner-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    width: fit-content;
+  }
+
+  .banner-tag span { width: 6px; height: 6px; background: var(--gold); border-radius: 50%; }
+
+  .welcome-banner h1 {
+    font-family: 'Sora', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+
+  .welcome-banner p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.65);
+    max-width: 420px;
+    line-height: 1.6;
+  }
+
+  .banner-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .competition-badge {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: var(--radius-md);
+    padding: 14px 18px;
+    text-align: right;
+  }
+
+  .competition-badge .badge-year {
+    font-family: 'Sora', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+
+  .competition-badge .badge-label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.55);
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  /* ─── GRID STATS ─────────────────────────── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .stat-card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    padding: 20px 22px;
+    border: 1px solid var(--gray-200);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: box-shadow 0.2s, border-color 0.2s;
+  }
+
+  .stat-card:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    border-color: var(--navy-100);
+  }
+
+  .stat-icon {
+    width: 46px; height: 46px;
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 20px;
+  }
+
+  .stat-icon.blue  { background: var(--navy-50); color: var(--accent); }
+  .stat-icon.gold  { background: #fef3c7; color: var(--gold); }
+  .stat-icon.green { background: #d1fae5; color: var(--success); }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--gray-500);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 4px;
+  }
+
+  .stat-value {
+    font-family: 'Sora', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--gray-800);
+    letter-spacing: -0.5px;
+  }
+
+  .stat-sub {
+    font-size: 12px;
+    color: var(--gray-400);
+    margin-top: 2px;
+  }
+
+  /* ─── SECTION CARDS ──────────────────────── */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--gray-200);
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+
+  .card-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--gray-100);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card-header-icon {
+    width: 34px; height: 34px;
+    background: var(--navy-50);
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .card-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--gray-800);
+    letter-spacing: -0.2px;
+  }
+
+  .card-sub {
+    font-size: 12px;
+    color: var(--gray-400);
+    margin-top: 1px;
+  }
+
+  .card-body { padding: 20px 24px; }
+
+  /* ─── COUNTDOWN ──────────────────────────── */
+  .countdown-wrap {
+    background: linear-gradient(135deg, var(--navy-900), var(--navy-700));
+    border-radius: var(--radius-xl);
+    padding: 32px 36px;
+    margin-bottom: 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .countdown-wrap::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px; height: 300px;
+    background: radial-gradient(ellipse, rgba(37,99,235,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .countdown-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--navy-300);
+    margin-bottom: 10px;
+  }
+
+  .countdown-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 24px;
+  }
+
+  .countdown-grid {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .countdown-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .countdown-box {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: var(--radius-md);
+    width: 80px; height: 72px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Sora', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -2px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .countdown-box::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .countdown-colon {
+    font-family: 'Sora', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.3);
+    padding-bottom: 20px;
+    align-self: flex-end;
+  }
+
+  .countdown-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--navy-300);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .countdown-date-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(245,158,11,0.15);
+    border: 1px solid rgba(245,158,11,0.3);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fbbf24;
+    letter-spacing: 0.3px;
+    position: relative;
+    z-index: 1;
+    margin-top: 8px;
+  }
+
+  /* ─── SUBJECT CARDS ──────────────────────── */
+  .subjects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 12px;
+  }
+
+  .subject-card {
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    padding: 16px 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    user-select: none;
+    background: var(--white);
+  }
+
+  .subject-card:hover:not(.locked) {
+    border-color: var(--accent-light);
+    background: var(--navy-50);
+  }
+
+  .subject-card.selected {
+    border-color: var(--accent);
+    background: linear-gradient(135deg, #eef5ff, var(--navy-50));
+  }
+
+  .subject-card.locked {
+    border-color: #10b981;
+    background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+    cursor: default;
+  }
+
+  .subject-card.disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .subject-checkbox {
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    border: 2px solid var(--gray-300);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+
+  .subject-card.selected .subject-checkbox {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .subject-card.locked .subject-checkbox {
+    background: var(--success);
+    border-color: var(--success);
+  }
+
+  .subject-card.selected .subject-checkbox::after,
+  .subject-card.locked .subject-checkbox::after {
+    content: '';
+    width: 12px; height: 7px;
+    border-left: 2.5px solid #fff;
+    border-bottom: 2.5px solid #fff;
+    transform: rotate(-45deg) translateY(-1px);
+  }
+
+  .subject-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gray-700);
+    flex: 1;
+  }
+
+  .subject-card.locked .subject-name {
+    color: #065f46;
+  }
+
+  .subject-card.selected .subject-name {
+    color: var(--navy-700);
+  }
+
+  .locked-pill {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    background: #10b981;
+    color: #fff;
+    border-radius: 20px;
+    padding: 2px 8px;
+  }
+
+  .subject-counter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    padding: 10px 16px;
+    background: var(--navy-50);
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--accent);
+  }
+
+  .subject-counter span {
+    font-size: 13px;
+    color: var(--navy-700);
+    font-weight: 500;
+  }
+
+  .counter-dots {
+    display: flex; gap: 4px; margin-left: auto;
+  }
+
+  .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--gray-200);
+    transition: background 0.2s;
+  }
+
+  .dot.filled { background: var(--accent); }
+  .dot.locked { background: var(--success); }
+
+  /* ─── RULES ──────────────────────────────── */
+  .rules-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .rule-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 12px 16px;
+    background: var(--gray-50);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--gray-100);
+  }
+
+  .rule-num {
+    width: 24px; height: 24px;
+    background: var(--navy-50);
+    border-radius: 50%;
+    font-family: 'Sora', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .rule-text {
+    font-size: 13.5px;
+    color: var(--gray-600);
+    line-height: 1.5;
+    padding-top: 2px;
+  }
+
+  /* ─── TWO COLUMN LAYOUT ──────────────────── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  /* ─── COMPETITION DETAILS ────────────────── */
+  .detail-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--gray-100);
+  }
+
+  .detail-row:last-child { border-bottom: none; }
+
+  .detail-icon {
+    width: 36px; height: 36px;
+    background: var(--navy-50);
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .detail-key {
+    font-size: 11px;
+    color: var(--gray-400);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+
+  .detail-val {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-800);
+    font-family: 'Sora', sans-serif;
+  }
+
+  /* ─── BUTTONS ────────────────────────────── */
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    border-top: 1px solid var(--gray-100);
+    background: var(--gray-50);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+    letter-spacing: 0.2px;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--navy-500));
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(37,99,235,0.35);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(37,99,235,0.45);
+  }
+
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-secondary {
+    background: #fff;
+    color: var(--navy-700);
+    border: 1.5px solid var(--gray-200);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--navy-300);
+    background: var(--navy-50);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--accent);
+    border: 1.5px solid var(--navy-100);
+  }
+
+  .btn-outline:hover {
+    background: var(--navy-50);
+    border-color: var(--accent);
+  }
+
+  .btn svg { width: 16px; height: 16px; }
+
+  /* ─── TOAST ──────────────────────────────── */
+  .toast {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    background: var(--navy-900);
+    color: #fff;
+    padding: 13px 20px;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    font-weight: 500;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.35s cubic-bezier(.4,0,.2,1);
+    pointer-events: none;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+    max-width: 320px;
+  }
+
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  .toast-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); flex-shrink: 0; }
+
+  /* ─── ALERT ──────────────────────────────── */
+  .alert {
+    display: flex;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 16px;
+    border: 1px solid;
+  }
+
+  .alert-info {
+    background: var(--navy-50);
+    color: var(--navy-700);
+    border-color: var(--navy-100);
+  }
+
+  .alert-icon { font-size: 16px; flex-shrink: 0; margin-top: 0; }
+
+  /* ─── MOBILE NAV TOGGLE ──────────────────── */
+  .mob-toggle {
+    display: none;
+    position: fixed;
+    top: 14px; left: 14px;
+    z-index: 200;
+    background: var(--navy-900);
+    border: none;
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .mob-toggle span {
+    display: block;
+    width: 20px; height: 2px;
+    background: #fff;
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+
+  .overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 99;
+  }
+
+  /* ─── PAGE VIEWS ─────────────────────────── */
+  .page-view { display: none; }
+  .page-view.active { display: block; }
+
+  /* ─── PROFILE PAGE ───────────────────────── */
+  .profile-hero {
+    background: linear-gradient(135deg, var(--navy-800) 0%, var(--navy-600) 60%, var(--navy-500) 100%);
+    border-radius: var(--radius-xl);
+    padding: 40px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .profile-hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: 40px;
+    width: 320px; height: 320px;
+    background: radial-gradient(circle, rgba(96,165,250,0.12) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  .profile-avatar-lg {
+    width: 88px; height: 88px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--navy-300));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Sora', sans-serif;
+    font-weight: 800;
+    font-size: 28px;
+    color: #fff;
+    flex-shrink: 0;
+    border: 3px solid rgba(255,255,255,0.25);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    position: relative;
+    z-index: 1;
+  }
+
+  .profile-hero-info { position: relative; z-index: 1; }
+
+  .profile-hero-name {
+    font-family: 'Sora', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 5px;
+  }
+
+  .profile-hero-school {
+    font-size: 14px;
+    color: rgba(255,255,255,0.65);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  .profile-badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .profile-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .badge-registered {
+    background: rgba(16,185,129,0.15);
+    border-color: rgba(16,185,129,0.35);
+    color: #6ee7b7;
+  }
+
+  .badge-competition {
+    background: rgba(245,158,11,0.15);
+    border-color: rgba(245,158,11,0.3);
+    color: #fbbf24;
+  }
+
+  .profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .profile-info-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--gray-100);
+  }
+
+  .profile-info-row:last-child { border-bottom: none; }
+
+  .profile-info-icon {
+    width: 38px; height: 38px;
+    background: var(--navy-50);
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+  }
+
+  .profile-info-key {
+    font-size: 11px;
+    color: var(--gray-400);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+
+  .profile-info-val {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--gray-800);
+    font-family: 'Sora', sans-serif;
+    letter-spacing: -0.2px;
+  }
+
+  .subject-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin: 2px;
+  }
+
+  .tag-locked { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+  .tag-normal { background: var(--navy-50); color: var(--navy-700); border: 1px solid var(--navy-100); }
+
+  .status-dot-green {
+    width: 8px; height: 8px;
+    background: var(--success);
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 2px;
+  }
+
+  @media (max-width: 900px) {
+    .sidebar {
+      transform: translateX(-100%);
+      transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+    }
+
+    .sidebar.open { transform: translateX(0); }
+
+    .main {
+      margin-left: 0;
+      max-width: 100vw;
+      padding: 80px 20px 40px;
+    }
+
+    .two-col { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: 1fr; }
+    .profile-grid { grid-template-columns: 1fr; }
+    .mob-toggle { display: flex; }
+    .overlay.show { display: block; }
+    .countdown-grid { gap: 8px; }
+    .countdown-box { width: 64px; height: 60px; font-size: 26px; }
+    .welcome-banner { flex-direction: column; gap: 20px; }
+    .banner-right { align-items: flex-start; }
+    .welcome-banner h1 { font-size: 22px; }
+    .profile-hero { flex-direction: column; align-items: flex-start; }
+    .profile-hero-name { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Mobile Toggle -->
+<button class="mob-toggle" id="mobToggle" aria-label="Toggle menu">
+  <span></span><span></span><span></span>
+</button>
+
+<div class="overlay" id="overlay"></div>
+
+<div class="layout">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <img src="1.png" alt="Zenova" style="width:42px;height:42px;object-fit:contain;border-radius:12px;flex-shrink:0;"
+        onerror="this.style.display='none';document.getElementById('sidebarLogoFb').style.display='flex';" />
+      <div class="logo-mark" id="sidebarLogoFb" style="display:none">Z</div>
+      <div>
+        <div class="logo-text">Zenova</div>
+        <div class="logo-sub">CBT Platform</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main Menu</div>
+
+      <a class="nav-item active" href="#" data-view="dashboard" onclick="return false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/>
+          <rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
+        </svg>
+        Dashboard
+      </a>
+
+      <a class="nav-item" href="#" data-view="dashboard" onclick="return false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>
+        Competition
+      </a>
+
+      <a class="nav-item" href="zenova-result.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+        </svg>
+        Results
+      </a>
+
+      <a class="nav-item" href="#" data-view="profile" onclick="return false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        Profile
+      </a>
+
+      <div class="nav-spacer"></div>
+
+      <a class="nav-item logout" href="#" onclick="doLogout(); return false;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>
+        </svg>
+        Logout
+      </a>
+    </nav>
+
+    <div class="sidebar-user">
+      <div class="user-avatar" id="sidebarAvatar">?</div>
+      <div>
+        <div class="user-info-name" id="sidebarName">Student</div>
+        <div class="user-info-role" id="sidebarSchool">School · 2027</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <main class="main">
+
+    <!-- ─── DASHBOARD VIEW ─── -->
+    <div class="page-view active" id="view-dashboard">
+
+    <!-- Welcome Banner -->
+    <div class="welcome-banner">
+      <div>
+        <div class="banner-tag"><span></span> Official Competition</div>
+        <h1 id="bannerWelcome">Welcome to Zenova CBT 🎓</h1>
+        <p>Prepare yourself for the official Zenova Mega CBT Competition 2027. Read the competition guidelines carefully before starting your exam preparation.</p>
+      </div>
+      <div class="banner-right">
+        <div class="competition-badge">
+          <div class="badge-year">2027</div>
+          <div class="badge-label">Mega CBT Competition</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon blue">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
+          </svg>
+        </div>
+        <div>
+          <div class="stat-label">Competition Date</div>
+          <div class="stat-value">Apr 10</div>
+          <div class="stat-sub">2027</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon gold">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+          </svg>
+        </div>
+        <div>
+          <div class="stat-label">Duration</div>
+          <div class="stat-value">2 Hours</div>
+          <div class="stat-sub">120 minutes</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon green">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="stat-label">Subjects Required</div>
+          <div class="stat-value">4 Subjects</div>
+          <div class="stat-sub">English compulsory</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Countdown -->
+    <div class="countdown-wrap">
+      <div class="countdown-eyebrow">Competition Countdown</div>
+      <div class="countdown-title">Competition Starts In</div>
+      <div class="countdown-grid">
+        <div class="countdown-unit">
+          <div class="countdown-box" id="cd-days">---</div>
+          <div class="countdown-label">Days</div>
+        </div>
+        <div class="countdown-colon">:</div>
+        <div class="countdown-unit">
+          <div class="countdown-box" id="cd-hours">--</div>
+          <div class="countdown-label">Hours</div>
+        </div>
+        <div class="countdown-colon">:</div>
+        <div class="countdown-unit">
+          <div class="countdown-box" id="cd-mins">--</div>
+          <div class="countdown-label">Minutes</div>
+        </div>
+        <div class="countdown-colon">:</div>
+        <div class="countdown-unit">
+          <div class="countdown-box" id="cd-secs">--</div>
+          <div class="countdown-label">Seconds</div>
+        </div>
+      </div>
+      <div class="countdown-date-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
+        </svg>
+        April 10th, 2027
+      </div>
+    </div>
+
+    <!-- Two Column: Competition Details + Rules -->
+    <div class="two-col">
+
+      <!-- Competition Details Card -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-header-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="card-title">Competition Details</div>
+            <div class="card-sub">Zenova Mega CBT 2027</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="detail-row">
+            <div class="detail-icon">📅</div>
+            <div>
+              <div class="detail-key">Date</div>
+              <div class="detail-val">April 10th, 2027</div>
+            </div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-icon">⏰</div>
+            <div>
+              <div class="detail-key">Duration</div>
+              <div class="detail-val">2 Hours (120 mins)</div>
+            </div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-icon">📝</div>
+            <div>
+              <div class="detail-key">Total Subjects</div>
+              <div class="detail-val">4 Subjects Required</div>
+            </div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-icon">🔒</div>
+            <div>
+              <div class="detail-key">Compulsory</div>
+              <div class="detail-val">English Language</div>
+            </div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-outline" onclick="scrollToRules()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+            </svg>
+            View Rules
+          </button>
+        </div>
+      </div>
+
+      <!-- Rules Card -->
+      <div class="card" id="rules-section">
+        <div class="card-header">
+          <div class="card-header-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+            </svg>
+          </div>
+          <div>
+            <div class="card-title">Competition Rules</div>
+            <div class="card-sub">Read carefully before starting</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="rules-list">
+            <div class="rule-item"><div class="rule-num">1</div><div class="rule-text">English Language is compulsory for all participants.</div></div>
+            <div class="rule-item"><div class="rule-num">2</div><div class="rule-text">Select only 3 additional subjects alongside English.</div></div>
+            <div class="rule-item"><div class="rule-num">3</div><div class="rule-text">The competition duration is exactly 2 hours.</div></div>
+            <div class="rule-item"><div class="rule-num">4</div><div class="rule-text">Ensure you have a stable internet connection before starting.</div></div>
+            <div class="rule-item"><div class="rule-num">5</div><div class="rule-text">Once the exam starts, the timer cannot be paused or stopped.</div></div>
+            <div class="rule-item"><div class="rule-num">6</div><div class="rule-text">Results will be released immediately after submission.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Subject Selection Card -->
+    <div class="card" id="subjects-section">
+      <div class="card-header">
+        <div class="card-header-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="card-title">Subject Selection</div>
+          <div class="card-sub">Select your 4 subjects for the competition</div>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="alert alert-info">
+          <div class="alert-icon">ℹ️</div>
+          <div>English Language is compulsory for all participants. Choose <strong>3 additional subjects</strong> from the options below to complete your registration.</div>
+        </div>
+
+        <div class="subject-counter">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/>
+          </svg>
+          <span id="counter-text">Select 3 more subjects to continue</span>
+          <div class="counter-dots">
+            <div class="dot locked" id="dot0"></div>
+            <div class="dot" id="dot1"></div>
+            <div class="dot" id="dot2"></div>
+            <div class="dot" id="dot3"></div>
+          </div>
+        </div>
+
+        <div class="subjects-grid" id="subjects-grid">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="save-btn" onclick="saveSelection()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/>
+          </svg>
+          Save Subject Selection
+        </button>
+        <button class="btn btn-secondary" id="start-btn" onclick="startExam()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>
+          </svg>
+          Start Competition
+        </button>
+      </div>
+    </div>
+
+    </div><!-- end #view-dashboard -->
+
+    <!-- ─── PROFILE VIEW ─── -->
+    <div class="page-view" id="view-profile">
+
+      <!-- Profile Hero -->
+      <div class="profile-hero">
+        <div class="profile-avatar-lg" id="profileAvatarLg">?</div>
+        <div class="profile-hero-info">
+          <div class="profile-hero-name" id="profileHeroName">Student Name</div>
+          <div class="profile-hero-school">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2">
+              <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            <span id="profileHeroSchool">School Name</span>
+          </div>
+          <div class="profile-badges">
+            <span class="profile-badge badge-registered">
+              <span class="status-dot-green"></span> Registered
+            </span>
+            <span class="profile-badge badge-competition">🏆 CBT 2027</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Info Grid -->
+      <div class="profile-grid">
+
+        <!-- Personal Info Card -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-header-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <div>
+              <div class="card-title">Personal Information</div>
+              <div class="card-sub">Your registration details</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="profile-info-row">
+              <div class="profile-info-icon">👤</div>
+              <div>
+                <div class="profile-info-key">Full Name</div>
+                <div class="profile-info-val" id="profileFullName">—</div>
+              </div>
+            </div>
+            <div class="profile-info-row">
+              <div class="profile-info-icon">🏫</div>
+              <div>
+                <div class="profile-info-key">School Name</div>
+                <div class="profile-info-val" id="profileSchool">—</div>
+              </div>
+            </div>
+            <div class="profile-info-row">
+              <div class="profile-info-icon">📅</div>
+              <div>
+                <div class="profile-info-key">Registered On</div>
+                <div class="profile-info-val" id="profileRegDate">—</div>
+              </div>
+            </div>
+            <div class="profile-info-row">
+              <div class="profile-info-icon">🕐</div>
+              <div>
+                <div class="profile-info-key">Time Registered</div>
+                <div class="profile-info-val" id="profileRegTime">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Competition Info Card -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-header-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="card-title">Competition Status</div>
+              <div class="card-sub">Zenova Mega CBT 2027</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="profile-info-row">
+              <div class="profile-info-icon">📋</div>
+              <div>
+                <div class="profile-info-key">Competition</div>
+                <div class="profile-info-val">Zenova Mega CBT 2027</div>
+              </div>
+            </div>
+            <div class="profile-info-row">
+              <div class="profile-info-icon">📅</div>
+              <div>
+                <div class="profile-info-key">Exam Date</div>
+                <div class="profile-info-val">April 10th, 2027</div>
+              </div>
+            </div>
+            <div class="profile-info-row">
+              <div class="profile-info-icon">✅</div>
+              <div>
+                <div class="profile-info-key">Status</div>
+                <div class="profile-info-val" style="color:var(--success); display:flex; align-items:center; gap:6px;">
+                  <span class="status-dot-green"></span> Registered
+                </div>
+              </div>
+            </div>
+            <div class="profile-info-row">
+              <div class="profile-info-icon">⏰</div>
+              <div>
+                <div class="profile-info-key">Duration</div>
+                <div class="profile-info-val">2 Hours</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subjects Card -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-header-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="card-title">Selected Subjects</div>
+            <div class="card-sub">Your exam subjects for CBT 2027</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="profileSubjects" style="display:flex; flex-wrap:wrap; gap:8px; padding: 4px 0;">
+            <span class="subject-tag tag-locked">📖 English Language (Required)</span>
+            <span style="font-size:13px; color:var(--gray-400); padding:4px 0;">No additional subjects saved yet. Go to Dashboard to select subjects.</span>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="switchView('dashboard')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+              <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+            </svg>
+            Back to Dashboard
+          </button>
+          <button class="btn btn-secondary" onclick="doLogout()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+              <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>
+            </svg>
+            Logout
+          </button>
+        </div>
+      </div>
+
+    </div><!-- end #view-profile -->
+
+  </main>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <div class="toast-dot" id="toast-dot"></div>
+  <span id="toast-msg"></span>
+</div>
+
+<script>
+  // ─── Load User from localStorage ─────────
+  const rawUser = localStorage.getItem('zenovaUser');
+  const user = rawUser ? JSON.parse(rawUser) : null;
+
+  if (!user) {
+    window.location.href = 'kane.html';
+  } else {
+    // Populate sidebar
+    document.getElementById('sidebarAvatar').textContent = user.initials || '?';
+    document.getElementById('sidebarName').textContent   = user.name   || 'Student';
+    document.getElementById('sidebarSchool').textContent = user.school || 'School · 2027';
+
+    // Personalise welcome banner
+    const firstName = user.name.split(' ')[0];
+    document.getElementById('bannerWelcome').textContent = `Welcome, ${firstName}! 🎓`;
+
+    // Populate profile page
+    document.getElementById('profileAvatarLg').textContent   = user.initials || '?';
+    document.getElementById('profileHeroName').textContent   = user.name     || '—';
+    document.getElementById('profileHeroSchool').textContent = user.school   || '—';
+    document.getElementById('profileFullName').textContent   = user.name     || '—';
+    document.getElementById('profileSchool').textContent     = user.school   || '—';
+    document.getElementById('profileRegDate').textContent    = user.registeredOn   || '—';
+    document.getElementById('profileRegTime').textContent    = user.registeredTime || '—';
+  }
+
+  // ─── View Switching ───────────────────────
+  function switchView(view) {
+    document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + view).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    if (view === 'profile') updateProfileSubjects();
+  }
+
+  // ─── Update Profile Subjects ──────────────
+  function updateProfileSubjects() {
+    const saved = localStorage.getItem('zenovaSubjects');
+    const container = document.getElementById('profileSubjects');
+    const selected = saved ? JSON.parse(saved) : [];
+    const subjectIcons = { 'English Language': '📖', 'Mathematics': '🔢', 'Physics': '⚡', 'Chemistry': '🧪', 'Biology': '🌿' };
+
+    if (selected.length === 0) {
+      container.innerHTML = `
+        <span class="subject-tag tag-locked">📖 English Language (Required)</span>
+        <span style="font-size:13px;color:var(--gray-400);padding:4px 0;width:100%;">No additional subjects saved yet. Go to Dashboard to select subjects.</span>`;
+    } else {
+      container.innerHTML = selected.map(name => {
+        const isEng = name === 'English Language';
+        const ico   = subjectIcons[name] || '📚';
+        return `<span class="subject-tag ${isEng ? 'tag-locked' : 'tag-normal'}">${ico} ${name}${isEng ? ' (Required)' : ''}</span>`;
+      }).join('');
+    }
+  }
+
+  // ─── Logout ───────────────────────────────
+  function doLogout() {
+    localStorage.removeItem('zenovaUser');
+    localStorage.removeItem('zenovaSubjects');
+    window.location.href = 'home.html';
+  }
+
+  // ─── Countdown ────────────────────────────
+  const target = new Date('April 10, 2027 09:00:00').getTime();
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function updateCountdown() {
+    const now = Date.now();
+    const diff = target - now;
+    if (diff <= 0) {
+      document.getElementById('cd-days').textContent = '000';
+      document.getElementById('cd-hours').textContent = '00';
+      document.getElementById('cd-mins').textContent = '00';
+      document.getElementById('cd-secs').textContent = '00';
+      return;
+    }
+    const days  = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const mins  = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const secs  = Math.floor((diff % (1000 * 60)) / 1000);
+    document.getElementById('cd-days').textContent  = String(days).padStart(3, '0');
+    document.getElementById('cd-hours').textContent = pad(hours);
+    document.getElementById('cd-mins').textContent  = pad(mins);
+    document.getElementById('cd-secs').textContent  = pad(secs);
+  }
+
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  // ─── Subjects ─────────────────────────────
+  const subjects = [
+    { id: 'english',  name: 'English Language', locked: true,  selected: true },
+    { id: 'math',     name: 'Mathematics',       locked: false, selected: false },
+    { id: 'physics',  name: 'Physics',           locked: false, selected: false },
+    { id: 'chem',     name: 'Chemistry',         locked: false, selected: false },
+    { id: 'bio',      name: 'Biology',           locked: false, selected: false },
+  ];
+
+  const icons = {
+    english: '📖', math: '🔢', physics: '⚡', chem: '🧪', bio: '🌿'
+  };
+
+  function getSelectedCount() {
+    return subjects.filter(s => s.selected && !s.locked).length;
+  }
+
+  function renderSubjects() {
+    const grid = document.getElementById('subjects-grid');
+    const selCount = getSelectedCount();
+
+    grid.innerHTML = subjects.map(s => {
+      const isDisabled = !s.locked && !s.selected && selCount >= 3;
+      let cls = 'subject-card';
+      if (s.locked)    cls += ' locked';
+      else if (s.selected) cls += ' selected';
+      if (isDisabled)  cls += ' disabled';
+
+      const onclick = s.locked ? '' : `onclick="toggleSubject('${s.id}')"`;
+
+      return `
+        <div class="${cls}" ${onclick}>
+          <div class="subject-checkbox"></div>
+          <div style="display:flex;align-items:center;gap:8px;flex:1">
+            <span style="font-size:18px">${icons[s.id]}</span>
+            <span class="subject-name">${s.name}</span>
+          </div>
+          ${s.locked ? '<span class="locked-pill">Required</span>' : ''}
+        </div>`;
+    }).join('');
+
+    updateCounter();
+  }
+
+  function toggleSubject(id) {
+    const s = subjects.find(x => x.id === id);
+    if (!s || s.locked) return;
+    if (!s.selected && getSelectedCount() >= 3) {
+      showToast('You can only select 3 additional subjects.', 'warn');
+      return;
+    }
+    s.selected = !s.selected;
+    renderSubjects();
+  }
+
+  function updateCounter() {
+    const count = getSelectedCount();
+    const remaining = 3 - count;
+    const txt = document.getElementById('counter-text');
+
+    if (remaining > 0) {
+      txt.textContent = `Select ${remaining} more subject${remaining > 1 ? 's' : ''} to continue`;
+    } else {
+      txt.textContent = '✓ All 4 subjects selected — ready to save!';
+    }
+
+    for (let i = 1; i <= 3; i++) {
+      const dot = document.getElementById('dot' + i);
+      if (dot) dot.className = 'dot' + (i <= count ? ' filled' : '');
+    }
+
+    const saveBtn = document.getElementById('save-btn');
+    saveBtn.disabled = count < 3;
+    saveBtn.style.opacity = count < 3 ? '0.5' : '1';
+    saveBtn.style.cursor  = count < 3 ? 'not-allowed' : 'pointer';
+  }
+
+  function saveSelection() {
+    if (getSelectedCount() < 3) return;
+    const selected = subjects.filter(s => s.selected).map(s => s.name);
+    // Persist subjects so profile page can show them
+    localStorage.setItem('zenovaSubjects', JSON.stringify(selected));
+    showToast(`Subjects saved: ${selected.join(', ')}`, 'success');
+  }
+
+  function startExam() {
+    if (getSelectedCount() < 3) {
+      showToast('Please select 3 subjects before starting.', 'warn');
+      return;
+    }
+
+    // Get selected subject names (normalised to lowercase for comparison)
+    const selected = subjects.filter(s => s.selected).map(s => s.name.toLowerCase());
+
+    // Maths combo: English + Mathematics + Physics + Chemistry
+    const isMathsCombo =
+      selected.includes('mathematics') &&
+      selected.includes('physics') &&
+      selected.includes('chemistry') &&
+      selected.includes('english language');
+
+    // Biology combo: English + Biology + Chemistry + Physics
+    const isBioCombo =
+      selected.includes('biology') &&
+      selected.includes('chemistry') &&
+      selected.includes('physics') &&
+      selected.includes('english language');
+
+    if (isMathsCombo) {
+      showToast('Redirecting to exam portal\u2026', 'success');
+      setTimeout(() => { window.location.href = 'page.html'; }, 800);
+    } else if (isBioCombo) {
+      showToast('Redirecting to exam portal\u2026', 'success');
+      setTimeout(() => { window.location.href = 'make.html'; }, 800);
+    } else {
+      showToast('Subject combination not recognised. Please check your selection.', 'warn');
+    }
+  }
+
+  function scrollToRules() {
+    document.getElementById('rules-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ─── Toast ────────────────────────────────
+  let toastTimer;
+
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    const d = document.getElementById('toast-dot');
+    const m = document.getElementById('toast-msg');
+    m.textContent = msg;
+    d.style.background = type === 'success' ? '#10b981' : '#f59e0b';
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+  }
+
+  // ─── Mobile Sidebar ───────────────────────
+  const sidebar   = document.getElementById('sidebar');
+  const overlay   = document.getElementById('overlay');
+  const mobToggle = document.getElementById('mobToggle');
+
+  mobToggle.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('show');
+  });
+
+  overlay.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('show');
+  });
+
+  // ─── Nav clicks ───────────────────────────
+  document.querySelectorAll('.nav-item[data-view]').forEach(item => {
+    item.addEventListener('click', function() {
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      this.classList.add('active');
+      switchView(this.dataset.view);
+      if (window.innerWidth <= 900) {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('show');
+      }
+    });
+  });
+
+  // Init
+  renderSubjects();
+</script>
+</body>
+</html>

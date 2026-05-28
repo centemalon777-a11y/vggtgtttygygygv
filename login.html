@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zenova — Enter Access Code</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0D1B4B;
+    --navy-mid: #1A2E6B;
+    --navy-light: #2440A8;
+    --navy-pale: #EEF1FB;
+    --navy-ghost: #F5F7FF;
+    --white: #FFFFFF;
+    --text-main: #0D1B4B;
+    --text-sub: #4E5C8A;
+    --text-hint: #8A94B8;
+    --border: #D8DEEF;
+    --success: #0F8A5F;
+    --success-bg: #EDFBF5;
+    --error: #C0392B;
+    --error-bg: #FEF0EF;
+    --warn-bg: #FFF8EC;
+    --warn-border: #F5C842;
+    --warn-text: #7A5400;
+    --radius-sm: 10px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-xl: 28px;
+    --shadow-soft: 0 4px 24px rgba(13, 27, 75, 0.08);
+    --shadow-btn: 0 6px 20px rgba(26, 46, 107, 0.35);
+    --shadow-input: 0 2px 10px rgba(13, 27, 75, 0.06);
+  }
+
+  html, body {
+    min-height: 100vh;
+    background: #F0F3FA;
+    font-family: 'DM Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 0 48px;
+    background: linear-gradient(180deg, #EEF1FB 0%, #F5F7FF 60%, #FFFFFF 100%);
+  }
+
+  /* HEADER */
+  .header {
+    width: 100%;
+    max-width: 440px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 0;
+  }
+
+  .back-btn {
+    width: 40px; height: 40px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--white);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    box-shadow: var(--shadow-soft);
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .back-btn:hover { background: var(--navy-ghost); border-color: var(--navy-light); }
+  .back-btn svg { width: 18px; height: 18px; stroke: var(--navy); stroke-width: 2.2; fill: none; }
+
+  .logo {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .logo-mark {
+    width: 36px; height: 36px;
+    border-radius: 9px;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logo-mark img { width: 100%; height: 100%; object-fit: contain; }
+  .logo-text {
+    font-family: 'Sora', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--navy);
+    letter-spacing: -0.3px;
+  }
+
+  .header-spacer { width: 40px; }
+
+  /* HERO ILLUSTRATION */
+  .hero-area {
+    width: 100%;
+    max-width: 440px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 24px 0;
+  }
+
+  .shield-wrap {
+    position: relative;
+    width: 110px; height: 110px;
+    margin-bottom: 28px;
+  }
+
+  .shield-bg-ring {
+    position: absolute; inset: -14px;
+    background: rgba(36, 64, 168, 0.06);
+    border-radius: 50%;
+  }
+  .shield-bg-ring2 {
+    position: absolute; inset: -6px;
+    background: rgba(36, 64, 168, 0.09);
+    border-radius: 50%;
+  }
+
+  .shield-icon {
+    width: 110px; height: 110px;
+    background: var(--white);
+    border-radius: 50%;
+    box-shadow: 0 8px 32px rgba(13, 27, 75, 0.12);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    z-index: 1;
+  }
+  .shield-icon svg { width: 56px; height: 56px; }
+
+  .page-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--navy);
+    text-align: center;
+    letter-spacing: -0.5px;
+    line-height: 1.25;
+    margin-bottom: 12px;
+  }
+
+  .page-subtitle {
+    font-size: 15px;
+    color: var(--text-sub);
+    text-align: center;
+    line-height: 1.65;
+    max-width: 300px;
+  }
+
+  /* FORM CARD */
+  .form-card {
+    width: calc(100% - 32px);
+    max-width: 408px;
+    background: var(--white);
+    border-radius: var(--radius-xl);
+    box-shadow: 0 10px 40px rgba(13, 27, 75, 0.10);
+    padding: 28px 24px 24px;
+    margin: 32px 16px 0;
+  }
+
+  .field-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-sub);
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .input-wrap {
+    position: relative;
+    margin-bottom: 18px;
+  }
+
+  .input-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%; transform: translateY(-50%);
+    display: flex; align-items: center;
+    pointer-events: none;
+  }
+  .input-icon svg { width: 18px; height: 18px; stroke: var(--text-hint); stroke-width: 2; fill: none; }
+
+  .code-input {
+    width: 100%;
+    height: 54px;
+    padding: 0 16px 0 46px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    font-family: 'Sora', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--navy);
+    background: var(--navy-ghost);
+    box-shadow: var(--shadow-input);
+    outline: none;
+    transition: all 0.2s;
+    letter-spacing: 2px;
+  }
+  .code-input::placeholder { color: var(--text-hint); letter-spacing: 0.5px; font-weight: 400; font-size: 15px; }
+  .code-input:focus {
+    border-color: var(--navy-light);
+    background: var(--white);
+    box-shadow: 0 0 0 4px rgba(36, 64, 168, 0.10), var(--shadow-input);
+  }
+
+  .verify-btn {
+    width: 100%;
+    height: 54px;
+    background: var(--navy);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-md);
+    font-family: 'Sora', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    cursor: pointer;
+    box-shadow: var(--shadow-btn);
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    transition: all 0.2s;
+    margin-bottom: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .verify-btn::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: rgba(255,255,255,0);
+    transition: background 0.2s;
+  }
+  .verify-btn:hover { background: var(--navy-mid); box-shadow: 0 8px 28px rgba(26, 46, 107, 0.45); transform: translateY(-1px); }
+  .verify-btn:hover::after { background: rgba(255,255,255,0.04); }
+  .verify-btn:active { transform: translateY(0); }
+  .verify-btn svg { width: 18px; height: 18px; stroke: #fff; stroke-width: 2.3; fill: none; flex-shrink: 0; }
+
+  /* LOADING STATE */
+  .verify-btn.loading { pointer-events: none; opacity: 0.85; }
+  .spinner {
+    width: 18px; height: 18px;
+    border: 2.5px solid rgba(255,255,255,0.35);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+  .verify-btn.loading .btn-label { display: none; }
+  .verify-btn.loading .spinner { display: block; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* INFO CARD */
+  .info-card {
+    margin-top: 18px;
+    background: var(--warn-bg);
+    border: 1.5px solid var(--warn-border);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .info-icon { flex-shrink: 0; margin-top: 1px; }
+  .info-icon svg { width: 18px; height: 18px; stroke: #D4820A; stroke-width: 2.2; fill: none; }
+  .info-text { flex: 1; }
+  .info-title { font-size: 13px; font-weight: 600; color: var(--warn-text); margin-bottom: 4px; }
+  .info-body { font-size: 13px; color: #8A6200; line-height: 1.6; }
+
+  /* FEEDBACK MESSAGES */
+  .message-box {
+    margin-top: 16px;
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    display: none;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .message-box.visible { display: flex; }
+  .message-box.success { background: var(--success-bg); border: 1.5px solid #7BD5B4; }
+  .message-box.error { background: var(--error-bg); border: 1.5px solid #F5B8B5; }
+  .msg-icon { flex-shrink: 0; margin-top: 1px; }
+  .msg-icon svg { width: 18px; height: 18px; stroke-width: 2.2; fill: none; }
+  .msg-text { font-size: 13.5px; line-height: 1.6; }
+  .success .msg-icon svg { stroke: var(--success); }
+  .success .msg-text { color: #0A5C3E; font-weight: 500; }
+  .error .msg-icon svg { stroke: var(--error); }
+  .error .msg-text { color: #8B1A13; font-weight: 500; }
+
+  /* FOOTER */
+  .footer-text {
+    margin-top: 28px;
+    font-size: 13.5px;
+    color: var(--text-hint);
+    text-align: center;
+  }
+  .footer-text a {
+    color: var(--navy-light);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .footer-text a:hover { text-decoration: underline; }
+
+  /* DOTS DECORATION */
+  .dots-deco {
+    width: 100%;
+    max-width: 440px;
+    overflow: hidden;
+    height: 28px;
+    margin-top: 4px;
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    align-items: center;
+    opacity: 0.25;
+  }
+  .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--navy-light); }
+  .dot:nth-child(2n) { opacity: 0.5; }
+
+  /* ANIMATIONS */
+  .hero-area, .form-card, .footer-text {
+    animation: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .hero-area { animation-delay: 0.05s; }
+  .form-card { animation-delay: 0.15s; }
+  .footer-text { animation-delay: 0.25s; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+
+  <!-- HEADER -->
+  <header class="header">
+    <a href="#" class="back-btn" aria-label="Go back">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    </a>
+    <div class="logo">
+      <div class="logo-mark">
+        <img src="1.png" alt="Zenova logo" />
+      </div>
+      <span class="logo-text">Zenova</span>
+    </div>
+    <div class="header-spacer"></div>
+  </header>
+
+  <!-- HERO -->
+  <div class="hero-area">
+    <div class="shield-wrap">
+      <div class="shield-bg-ring"></div>
+      <div class="shield-bg-ring2"></div>
+      <div class="shield-icon">
+        <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Shield body -->
+          <path d="M28 6L10 13V25C10 35.5 18 44.6 28 47C38 44.6 46 35.5 46 25V13L28 6Z"
+            fill="#EEF1FB" stroke="#0D1B4B" stroke-width="2.2"/>
+          <!-- Key icon inside shield -->
+          <circle cx="24" cy="26" r="6" stroke="#0D1B4B" stroke-width="2.2"/>
+          <path d="M28.5 26H39" stroke="#0D1B4B" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M36 26V30" stroke="#0D1B4B" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M32 26V28.5" stroke="#0D1B4B" stroke-width="2.2" stroke-linecap="round"/>
+          <circle cx="24" cy="26" r="2.5" fill="#0D1B4B"/>
+        </svg>
+      </div>
+    </div>
+
+    <h1 class="page-title">Enter Your Access Code</h1>
+    <p class="page-subtitle">To participate in the Zenova Mega CBT Competition, enter the access code issued to you by Zenova.</p>
+  </div>
+
+  <!-- FORM CARD -->
+  <div class="form-card">
+    <label class="field-label" for="accessCode">Access Code</label>
+
+    <div class="input-wrap">
+      <span class="input-icon">
+        <svg viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+      </span>
+      <input
+        id="accessCode"
+        class="code-input"
+        type="text"
+        placeholder="Enter access code"
+        maxlength="20"
+        autocomplete="off"
+        spellcheck="false"
+        autocapitalize="characters"
+      />
+    </div>
+
+    <button class="verify-btn" id="verifyBtn" onclick="handleVerify()">
+      <div class="spinner" id="spinner"></div>
+      <span class="btn-label">
+        <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        Verify Code
+      </span>
+    </button>
+
+    <!-- Info card -->
+    <div class="info-card">
+      <div class="info-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      </div>
+      <div class="info-text">
+        <div class="info-title">Important</div>
+        <div class="info-body">Each access code can only be used once. Please enter your code correctly before proceeding.</div>
+      </div>
+    </div>
+
+    <!-- Success message -->
+    <div class="message-box success" id="successMsg">
+      <div class="msg-icon">
+        <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      </div>
+      <div class="msg-text">Code verified successfully. Continue to registration.</div>
+    </div>
+
+    <!-- Error message -->
+    <div class="message-box error" id="errorMsg">
+      <div class="msg-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+      </div>
+      <div class="msg-text">Invalid or expired access code. Please check and try again.</div>
+    </div>
+  </div>
+
+  <!-- DOTS DECO -->
+  <div class="dots-deco" aria-hidden="true">
+    <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+
+  <!-- FOOTER -->
+  <p class="footer-text">Need help? <a href="mailto:support@zenova.ng">Contact Zenova support</a></p>
+
+</div>
+
+<script>
+  function handleVerify() {
+    const input = document.getElementById('accessCode');
+    const btn = document.getElementById('verifyBtn');
+    const successMsg = document.getElementById('successMsg');
+    const errorMsg = document.getElementById('errorMsg');
+    const code = input.value.trim();
+
+    successMsg.classList.remove('visible');
+    errorMsg.classList.remove('visible');
+
+    if (!code) {
+      input.style.borderColor = '#E24B4A';
+      input.style.boxShadow = '0 0 0 4px rgba(226,75,74,0.12)';
+      setTimeout(() => {
+        input.style.borderColor = '';
+        input.style.boxShadow = '';
+      }, 1800);
+      return;
+    }
+
+    btn.classList.add('loading');
+
+    setTimeout(() => {
+      btn.classList.remove('loading');
+
+      const validCodes = ['ZENOVA2025', 'ZNV-TEST', 'MEGA-CBT', 'ZNV-TEST1'];
+      if (validCodes.includes(code.toUpperCase())) {
+        successMsg.classList.add('visible');
+        btn.style.background = '#0F8A5F';
+        btn.style.boxShadow = '0 6px 20px rgba(15,138,95,0.35)';
+        input.style.borderColor = '#7BD5B4';
+        setTimeout(() => {
+          window.location.href = 'home.html';
+        }, 1200);
+      } else {
+        errorMsg.classList.add('visible');
+        input.style.borderColor = '#E24B4A';
+        input.style.boxShadow = '0 0 0 4px rgba(226,75,74,0.10)';
+        input.focus();
+        setTimeout(() => {
+          input.style.borderColor = '';
+          input.style.boxShadow = '';
+        }, 2000);
+      }
+    }, 1400);
+  }
+
+  document.getElementById('accessCode').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') handleVerify();
+  });
+</script>
+</body>
+</html>
